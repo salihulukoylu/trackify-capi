@@ -1,0 +1,569 @@
+/**
+ * Trackify CAPI - Setup Wizard Styles
+ * 
+ * @package Trackify_CAPI
+ * @since 2.0.0
+ */
+
+/* ==========================================================================
+   Setup Wizard Layout
+   ========================================================================== */
+
+.trackify-setup {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+.trackify-setup-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.trackify-setup-container {
+    background: white;
+    max-width: 900px;
+    width: 100%;
+    padding: 50px;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   Logo & Header
+   ========================================================================== */
+
+.trackify-setup-logo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.trackify-setup-logo h1 {
+    font-size: 32px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    color: #2c3e50;
+}
+
+.trackify-setup-logo img {
+    height: 48px;
+    width: auto;
+}
+
+.trackify-setup-logo p {
+    margin: 10px 0 0;
+    color: #7f8c8d;
+    font-size: 16px;
+}
+
+/* ==========================================================================
+   Steps Navigation
+   ========================================================================== */
+
+.trackify-setup-steps {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0 0 50px 0;
+    padding: 0;
+    position: relative;
+}
+
+.trackify-setup-steps li {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    color: #95a5a6;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.trackify-setup-steps li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    width: 100%;
+    height: 3px;
+    background: #ecf0f1;
+    z-index: -1;
+    transition: all 0.3s ease;
+}
+
+.trackify-setup-steps li.done::after {
+    background: #28a745;
+}
+
+.trackify-setup-steps li.active::after {
+    background: linear-gradient(90deg, #28a745 0%, #ecf0f1 100%);
+}
+
+.trackify-setup-steps .step-number {
+    display: block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    background: #ecf0f1;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    color: #7f8c8d;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.trackify-setup-steps li.active .step-number {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.trackify-setup-steps li.done .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.trackify-setup-steps li.active {
+    color: #2c3e50;
+}
+
+.trackify-setup-steps li.done {
+    color: #28a745;
+}
+
+.trackify-setup-steps .step-label {
+    display: block;
+    font-size: 12px;
+}
+
+/* ==========================================================================
+   Step Content
+   ========================================================================== */
+
+.trackify-setup-content {
+    min-height: 400px;
+}
+
+.trackify-setup-step h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 28px;
+}
+
+.trackify-setup-step .lead {
+    font-size: 16px;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Features Grid
+   ========================================================================== */
+
+.trackify-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 40px 0;
+}
+
+.trackify-features .feature {
+    text-align: center;
+    padding: 30px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.trackify-features .feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.trackify-features .feature .dashicons {
+    font-size: 48px;
+    color: #667eea;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.trackify-features .feature h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.trackify-features .feature p {
+    margin: 0;
+    font-size: 13px;
+    color: #7f8c8d;
+}
+
+/* ==========================================================================
+   Site Type Cards
+   ========================================================================== */
+
+.trackify-site-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.site-type-card {
+    cursor: pointer;
+}
+
+.site-type-card input[type="radio"] {
+    display: none;
+}
+
+.site-type-card .card-content {
+    padding: 30px 20px;
+    text-align: center;
+    background: #f8f9fa;
+    border: 3px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.site-type-card input:checked + .card-content {
+    background: #e7f3ff;
+    border-color: #667eea;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+}
+
+.site-type-card:hover .card-content {
+    border-color: #667eea;
+    transform: translateY(-3px);
+}
+
+.site-type-card .dashicons {
+    font-size: 48px;
+    color: #667eea;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.site-type-card h3 {
+    margin: 0 0 5px;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.site-type-card p {
+    margin: 0;
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+/* ==========================================================================
+   Form Groups
+   ========================================================================== */
+
+.trackify-form-group {
+    margin-bottom: 25px;
+}
+
+.trackify-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.trackify-form-group .required {
+    color: #dc3545;
+}
+
+.trackify-form-group .optional {
+    color: #7f8c8d;
+    font-weight: 400;
+}
+
+.trackify-form-group input[type="text"],
+.trackify-form-group input[type="password"],
+.trackify-form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.trackify-form-group input:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.trackify-form-group .description {
+    margin-top: 8px;
+    color: #7f8c8d;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Events List
+   ========================================================================== */
+
+.trackify-events-list {
+    display: grid;
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.event-item {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.event-item input[type="checkbox"] {
+    margin-top: 4px;
+    margin-right: 0;
+    flex-shrink: 0;
+    display: none;
+}
+
+.event-item .event-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 3px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.event-item input:checked ~ .event-content {
+    background: #e7f3ff;
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.event-item:hover .event-content {
+    border-color: #667eea;
+}
+
+.event-item .dashicons {
+    font-size: 32px;
+    color: #667eea;
+    margin-right: 20px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.event-item strong {
+    display: block;
+    font-size: 16px;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.event-item p {
+    margin: 0;
+    font-size: 13px;
+    color: #7f8c8d;
+}
+
+/* ==========================================================================
+   Setup Actions
+   ========================================================================== */
+
+.trackify-setup-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.trackify-setup-actions .button {
+    padding: 15px 40px;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.trackify-setup-actions .button-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.trackify-setup-actions .button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.trackify-setup-actions .button-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Info Box
+   ========================================================================== */
+
+.trackify-info-box {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    background: #e7f3ff;
+    border-left: 4px solid #667eea;
+    border-radius: 6px;
+    margin: 30px 0;
+}
+
+.trackify-info-box .dashicons {
+    color: #667eea;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.trackify-info-box strong {
+    display: block;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.trackify-info-box p {
+    margin: 0 0 15px;
+    color: #7f8c8d;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Complete Step
+   ========================================================================== */
+
+.trackify-setup-complete {
+    text-align: center;
+}
+
+.trackify-setup-complete .success-icon {
+    font-size: 80px;
+    color: #28a745;
+    margin-bottom: 30px;
+    animation: successPulse 1.5s ease-in-out;
+}
+
+.trackify-setup-complete .success-icon .dashicons {
+    width: 80px;
+    height: 80px;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.trackify-setup-complete .next-steps {
+    text-align: left;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.trackify-setup-complete .next-steps h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.trackify-setup-complete .next-steps ol {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+}
+
+.trackify-setup-complete .next-steps li {
+    counter-increment: step;
+    margin-bottom: 25px;
+    padding-left: 50px;
+    position: relative;
+}
+
+.trackify-setup-complete .next-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+}
+
+.trackify-setup-complete .next-steps li strong {
+    display: block;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .trackify-setup-container {
+        padding: 30px 20px;
+    }
+    
+    .trackify-setup-steps {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .trackify-setup-steps li:not(:last-child)::after {
+        display: none;
+    }
+    
+    .trackify-site-types,
+    .trackify-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .trackify-setup-actions {
+        flex-direction: column;
+    }
+    
+    .trackify-setup-actions .button {
+        width: 100%;
+    }
+}

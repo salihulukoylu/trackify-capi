@@ -1,0 +1,479 @@
+/**
+ * Trackify CAPI - Dashboard Widget Styles
+ * 
+ * @package Trackify_CAPI
+ * @since 2.0.0
+ */
+
+/* ==========================================================================
+   Dashboard Widget
+   ========================================================================== */
+
+#trackify_capi_dashboard {
+    padding: 0 !important;
+}
+
+#trackify_capi_dashboard .inside {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.trackify-dashboard-widget {
+    padding: 20px;
+}
+
+/* ==========================================================================
+   Stats Grid
+   ========================================================================== */
+
+.trackify-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.trackify-stat-box {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #0073aa;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.trackify-stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.trackify-stat-box .stat-icon {
+    font-size: 40px;
+    margin-right: 20px;
+    color: #0073aa;
+    opacity: 0.8;
+}
+
+.trackify-stat-box .stat-icon .dashicons {
+    width: 40px;
+    height: 40px;
+}
+
+.trackify-stat-box .stat-icon.success {
+    color: #28a745;
+}
+
+.trackify-stat-box .stat-icon.error {
+    color: #dc3545;
+}
+
+.trackify-stat-box .stat-icon.warning {
+    color: #ffc107;
+}
+
+.trackify-stat-box .stat-content {
+    flex: 1;
+}
+
+.trackify-stat-box .stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.trackify-stat-box .stat-label {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.trackify-stat-box .stat-period {
+    font-size: 11px;
+    color: #999;
+}
+
+.trackify-stat-box .stat-period a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.trackify-stat-box .stat-period a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Event Breakdown
+   ========================================================================== */
+
+.trackify-event-breakdown {
+    margin-bottom: 25px;
+}
+
+.trackify-event-breakdown h4 {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 8px;
+}
+
+.trackify-event-breakdown table {
+    font-size: 13px;
+    border: 1px solid #e9ecef;
+}
+
+.trackify-event-breakdown table thead th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.trackify-event-breakdown table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.trackify-event-breakdown table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.trackify-success-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    min-width: 50px;
+}
+
+/* ==========================================================================
+   Quick Actions
+   ========================================================================== */
+
+.trackify-quick-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    border-top: 2px solid #e9ecef;
+}
+
+.trackify-quick-actions .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.trackify-quick-actions .button .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.trackify-quick-actions .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.trackify-quick-actions .button-primary {
+    background: linear-gradient(135deg, #0073aa 0%, #005177 100%);
+    border: none;
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+
+.trackify-dashboard-notice {
+    padding: 20px;
+    border-left: 4px solid #ffba00;
+    background: #fff8e5;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.trackify-dashboard-notice p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.trackify-dashboard-notice .dashicons {
+    color: #ffba00;
+    font-size: 24px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.trackify-dashboard-notice strong {
+    color: #856404;
+    font-size: 15px;
+}
+
+.trackify-dashboard-notice.notice-info {
+    border-left-color: #0073aa;
+    background: #e7f3ff;
+}
+
+.trackify-dashboard-notice.notice-info .dashicons {
+    color: #0073aa;
+}
+
+.trackify-dashboard-notice.notice-info strong {
+    color: #004085;
+}
+
+.trackify-dashboard-notice.notice-success {
+    border-left-color: #28a745;
+    background: #d4edda;
+}
+
+.trackify-dashboard-notice.notice-success .dashicons {
+    color: #28a745;
+}
+
+.trackify-dashboard-notice.notice-success strong {
+    color: #155724;
+}
+
+/* ==========================================================================
+   Test Mode Notice
+   ========================================================================== */
+
+.trackify-test-mode-notice {
+    margin-top: 20px;
+    padding: 15px 20px;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+}
+
+.trackify-test-mode-notice .dashicons {
+    color: #856404;
+    float: left;
+    margin-right: 15px;
+    font-size: 20px;
+}
+
+.trackify-test-mode-notice strong {
+    display: block;
+    color: #856404;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.trackify-test-mode-notice p {
+    margin: 0;
+    font-size: 13px;
+    color: #856404;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.trackify-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.trackify-empty-state .dashicons {
+    font-size: 64px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.trackify-empty-state h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.trackify-empty-state p {
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   Loading State
+   ========================================================================== */
+
+.trackify-loading {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.trackify-loading .dashicons {
+    font-size: 32px;
+    color: #0073aa;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   Progress Bar
+   ========================================================================== */
+
+.trackify-progress {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.trackify-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #0073aa 0%, #005177 100%);
+    transition: width 0.6s ease;
+}
+
+.trackify-progress-bar.success {
+    background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
+}
+
+.trackify-progress-bar.warning {
+    background: linear-gradient(90deg, #ffc107 0%, #e0a800 100%);
+}
+
+.trackify-progress-bar.danger {
+    background: linear-gradient(90deg, #dc3545 0%, #bd2130 100%);
+}
+
+/* ==========================================================================
+   Tooltips
+   ========================================================================== */
+
+.trackify-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.trackify-tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #2c3e50;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.trackify-tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2c3e50 transparent transparent transparent;
+}
+
+.trackify-tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 782px) {
+    .trackify-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .trackify-quick-actions {
+        flex-direction: column;
+    }
+    
+    .trackify-quick-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .trackify-stat-box {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .trackify-stat-box .stat-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .trackify-stat-box {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        border-left-color: #3498db;
+    }
+    
+    .trackify-stat-box .stat-value {
+        color: #ecf0f1;
+    }
+    
+    .trackify-stat-box .stat-label {
+        color: #bdc3c7;
+    }
+    
+    .trackify-stat-box .stat-period {
+        color: #7f8c8d;
+    }
+    
+    .trackify-event-breakdown table thead th {
+        background: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .trackify-event-breakdown table tbody tr:hover {
+        background: #2c3e50;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    .trackify-quick-actions,
+    .trackify-test-mode-notice {
+        display: none;
+    }
+    
+    .trackify-stat-box {
+        break-inside: avoid;
+    }
+}
