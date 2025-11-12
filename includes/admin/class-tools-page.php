@@ -52,6 +52,8 @@ class Trackify_CAPI_Tools_Page {
                 <p><?php esc_html_e( 'Test, bakım ve yardımcı araçlar', 'trackify-capi' ); ?></p>
             </div>
             
+            <?php settings_errors(); ?>
+            
             <div class="trackify-settings-grid">
                 <!-- Sol Kolon: Test & Debug -->
                 <div>
@@ -81,7 +83,7 @@ class Trackify_CAPI_Tools_Page {
                         
                         <p><?php esc_html_e( 'Tüm event loglarını veritabanından ve dosyalardan kalıcı olarak silin.', 'trackify-capi' ); ?></p>
                         
-                        <button type="button" class="button button-large trackify-clear-logs">
+                        <button type="button" class="button button-large trackify-clear-logs" onclick="return confirm('<?php esc_attr_e( 'Tüm loglar silinecek. Emin misiniz?', 'trackify-capi' ); ?>');">
                             <span class="dashicons dashicons-trash"></span>
                             <?php esc_html_e( 'Tüm Logları Temizle', 'trackify-capi' ); ?>
                         </button>
@@ -102,7 +104,7 @@ class Trackify_CAPI_Tools_Page {
                                 <?php esc_html_e( 'Ayarları Dışa Aktar', 'trackify-capi' ); ?>
                             </button>
                             
-                            <button type="button" class="button button-large trackify-import-settings">
+                            <button type="button" class="button button-large" onclick="document.getElementById('trackify-import-file').click();">
                                 <span class="dashicons dashicons-upload"></span>
                                 <?php esc_html_e( 'Ayarları İçe Aktar', 'trackify-capi' ); ?>
                             </button>
@@ -125,38 +127,52 @@ class Trackify_CAPI_Tools_Page {
                                     <td><?php echo esc_html( TRACKIFY_CAPI_VERSION ); ?></td>
                                 </tr>
                                 <tr>
-                                    <td><strong><?php esc_html_e( 'WordPress', 'trackify-capi' ); ?></strong></td>
+                                    <td><strong><?php esc_html_e( 'WordPress Versiyonu', 'trackify-capi' ); ?></strong></td>
                                     <td><?php echo esc_html( get_bloginfo( 'version' ) ); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong><?php esc_html_e( 'PHP Versiyonu', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( PHP_VERSION ); ?></td>
-                                </tr>
-                                <tr>
-                                    <td><strong><?php esc_html_e( 'MySQL Versiyonu', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( $GLOBALS['wpdb']->db_version() ); ?></td>
+                                    <td><?php echo esc_html( phpversion() ); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong><?php esc_html_e( 'WooCommerce', 'trackify-capi' ); ?></strong></td>
                                     <td>
                                         <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-                                            <span style="color: green;">✓</span> <?php echo esc_html( WC()->version ); ?>
+                                            <span style="color: green;">✓</span> <?php echo esc_html( WC_VERSION ); ?>
                                         <?php else : ?>
-                                            <span style="color: red;">✗</span> <?php esc_html_e( 'Yüklü değil', 'trackify-capi' ); ?>
+                                            <span style="color: red;">✗</span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><strong><?php esc_html_e( 'Server Software', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( $_SERVER['SERVER_SOFTWARE'] ?? 'N/A' ); ?></td>
+                                    <td><strong><?php esc_html_e( 'Contact Form 7', 'trackify-capi' ); ?></strong></td>
+                                    <td>
+                                        <?php if ( defined( 'WPCF7_VERSION' ) ) : ?>
+                                            <span style="color: green;">✓</span> <?php echo esc_html( WPCF7_VERSION ); ?>
+                                        <?php else : ?>
+                                            <span style="color: red;">✗</span>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><strong><?php esc_html_e( 'PHP Memory Limit', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( ini_get( 'memory_limit' ) ); ?></td>
+                                    <td><strong><?php esc_html_e( 'WPForms', 'trackify-capi' ); ?></strong></td>
+                                    <td>
+                                        <?php if ( defined( 'WPFORMS_VERSION' ) ) : ?>
+                                            <span style="color: green;">✓</span> <?php echo esc_html( WPFORMS_VERSION ); ?>
+                                        <?php else : ?>
+                                            <span style="color: red;">✗</span>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><strong><?php esc_html_e( 'Max Upload Size', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( size_format( wp_max_upload_size() ) ); ?></td>
+                                    <td><strong><?php esc_html_e( 'Gravity Forms', 'trackify-capi' ); ?></strong></td>
+                                    <td>
+                                        <?php if ( class_exists( 'GFForms' ) ) : ?>
+                                            <span style="color: green;">✓</span> <?php echo esc_html( GFForms::$version ?? 'N/A' ); ?>
+                                        <?php else : ?>
+                                            <span style="color: red;">✗</span>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td><strong><?php esc_html_e( 'Aktif Pixel Sayısı', 'trackify-capi' ); ?></strong></td>
@@ -164,17 +180,13 @@ class Trackify_CAPI_Tools_Page {
                                 </tr>
                                 <tr>
                                     <td><strong><?php esc_html_e( 'Toplam Log Sayısı', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( trackify_capi_format_number( $this->get_total_log_count() ) ); ?></td>
-                                </tr>
-                                <tr>
-                                    <td><strong><?php esc_html_e( 'Log Dizini Boyutu', 'trackify-capi' ); ?></strong></td>
-                                    <td><?php echo esc_html( size_format( $this->get_log_directory_size() ) ); ?></td>
+                                    <td><?php echo esc_html( number_format_i18n( $this->get_total_log_count() ) ); ?></td>
                                 </tr>
                             </tbody>
                         </table>
                         
                         <p style="margin-top: 15px;">
-                            <button type="button" class="button" onclick="navigator.clipboard.writeText(document.querySelector('.trackify-settings-section table').innerText); alert('Sistem bilgileri kopyalandı!');">
+                            <button type="button" class="button" onclick="var text = document.querySelector('.trackify-settings-section table').innerText; navigator.clipboard.writeText(text); alert('<?php esc_attr_e( 'Sistem bilgileri kopyalandı!', 'trackify-capi' ); ?>');">
                                 <span class="dashicons dashicons-clipboard"></span>
                                 <?php esc_html_e( 'Sistem Bilgilerini Kopyala', 'trackify-capi' ); ?>
                             </button>
@@ -215,157 +227,171 @@ class Trackify_CAPI_Tools_Page {
                         </table>
                     </div>
                     
-                    <!-- REST API Test -->
+                    <!-- REST API Info -->
                     <div class="trackify-settings-section">
                         <h2>
                             <span class="dashicons dashicons-rest-api"></span>
-                            <?php esc_html_e( 'REST API Test', 'trackify-capi' ); ?>
+                            <?php esc_html_e( 'REST API Bilgileri', 'trackify-capi' ); ?>
                         </h2>
                         
                         <p><?php esc_html_e( 'REST API endpoint\'lerini test edin.', 'trackify-capi' ); ?></p>
                         
                         <table class="widefat">
+                            <thead>
+                                <tr>
+                                    <th><?php esc_html_e( 'Endpoint', 'trackify-capi' ); ?></th>
+                                    <th><?php esc_html_e( 'URL', 'trackify-capi' ); ?></th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>/health</strong></td>
-                                    <td>
-                                        <a href="<?php echo esc_url( rest_url( 'trackify-capi/v1/health' ) ); ?>" target="_blank" class="button button-small">
-                                            <?php esc_html_e( 'Test Et', 'trackify-capi' ); ?>
-                                        </a>
-                                    </td>
+                                    <td><strong><?php esc_html_e( 'Health Check', 'trackify-capi' ); ?></strong></td>
+                                    <td><code><?php echo esc_html( rest_url( 'trackify-capi/v1/health' ) ); ?></code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>/stats</strong></td>
-                                    <td>
-                                        <a href="<?php echo esc_url( rest_url( 'trackify-capi/v1/stats' ) ); ?>" target="_blank" class="button button-small">
-                                            <?php esc_html_e( 'Test Et', 'trackify-capi' ); ?>
-                                        </a>
-                                    </td>
+                                    <td><strong><?php esc_html_e( 'Track Event', 'trackify-capi' ); ?></strong></td>
+                                    <td><code><?php echo esc_html( rest_url( 'trackify-capi/v1/track' ) ); ?></code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong><?php esc_html_e( 'Stats', 'trackify-capi' ); ?></strong></td>
+                                    <td><code><?php echo esc_html( rest_url( 'trackify-capi/v1/stats' ) ); ?></code></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     
-                    <!-- Debug Information -->
+                    <!-- Shortcuts -->
                     <div class="trackify-settings-section">
                         <h2>
-                            <span class="dashicons dashicons-admin-tools"></span>
-                            <?php esc_html_e( 'Debug Bilgileri', 'trackify-capi' ); ?>
+                            <span class="dashicons dashicons-admin-links"></span>
+                            <?php esc_html_e( 'Hızlı Linkler', 'trackify-capi' ); ?>
                         </h2>
                         
-                        <p><?php esc_html_e( 'Sorun giderme için yararlı bilgiler.', 'trackify-capi' ); ?></p>
-                        
-                        <table class="widefat">
-                            <tbody>
-                                <tr>
-                                    <td><strong><?php esc_html_e( 'WP_DEBUG', 'trackify-capi' ); ?></strong></td>
-                                    <td>
-                                        <?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-                                            <span style="color: orange;">✓</span> <?php esc_html_e( 'Aktif', 'trackify-capi' ); ?>
-                                        <?php else : ?>
-                                            <span style="color: green;">✗</span> <?php esc_html_e( 'Pasif', 'trackify-capi' ); ?>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong><?php esc_html_e( 'SCRIPT_DEBUG', 'trackify-capi' ); ?></strong></td>
-                                    <td>
-                                        <?php if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) : ?>
-                                            <span style="color: orange;">✓</span> <?php esc_html_e( 'Aktif', 'trackify-capi' ); ?>
-                                        <?php else : ?>
-                                            <span style="color: green;">✗</span> <?php esc_html_e( 'Pasif', 'trackify-capi' ); ?>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong><?php esc_html_e( 'HTTPS', 'trackify-capi' ); ?></strong></td>
-                                    <td>
-                                        <?php if ( is_ssl() ) : ?>
-                                            <span style="color: green;">✓</span> <?php esc_html_e( 'Aktif', 'trackify-capi' ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span> <?php esc_html_e( 'Pasif', 'trackify-capi' ); ?>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong><?php esc_html_e( 'Cron', 'trackify-capi' ); ?></strong></td>
-                                    <td>
-                                        <?php if ( ! defined( 'DISABLE_WP_CRON' ) || ! DISABLE_WP_CRON ) : ?>
-                                            <span style="color: green;">✓</span> <?php esc_html_e( 'Aktif', 'trackify-capi' ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span> <?php esc_html_e( 'Devre Dışı', 'trackify-capi' ); ?>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Integrations Status -->
-                    <div class="trackify-settings-section">
-                        <h2>
-                            <span class="dashicons dashicons-admin-plugins"></span>
-                            <?php esc_html_e( 'Entegrasyon Durumu', 'trackify-capi' ); ?>
-                        </h2>
-                        
-                        <table class="widefat">
-                            <tbody>
-                                <tr>
-                                    <td><strong>WooCommerce</strong></td>
-                                    <td>
-                                        <?php if ( class_exists( 'WooCommerce' ) ) : ?>
-                                            <span style="color: green;">✓</span> <?php echo esc_html( WC()->version ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Contact Form 7</strong></td>
-                                    <td>
-                                        <?php if ( defined( 'WPCF7_VERSION' ) ) : ?>
-                                            <span style="color: green;">✓</span> <?php echo esc_html( WPCF7_VERSION ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>WPForms</strong></td>
-                                    <td>
-                                        <?php if ( defined( 'WPFORMS_VERSION' ) ) : ?>
-                                            <span style="color: green;">✓</span> <?php echo esc_html( WPFORMS_VERSION ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Gravity Forms</strong></td>
-                                    <td>
-                                        <?php if ( class_exists( 'GFForms' ) ) : ?>
-                                            <span style="color: green;">✓</span> <?php echo esc_html( GFForms::$version ?? 'N/A' ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Elementor</strong></td>
-                                    <td>
-                                        <?php if ( defined( 'ELEMENTOR_VERSION' ) ) : ?>
-                                            <span style="color: green;">✓</span> <?php echo esc_html( ELEMENTOR_VERSION ); ?>
-                                        <?php else : ?>
-                                            <span style="color: red;">✗</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <ul>
+                            <li style="margin-bottom: 10px;">
+                                <a href="https://www.facebook.com/events_manager2/" target="_blank">
+                                    <span class="dashicons dashicons-external"></span>
+                                    <?php esc_html_e( 'Meta Events Manager', 'trackify-capi' ); ?>
+                                </a>
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <a href="https://developers.facebook.com/docs/marketing-api/conversions-api" target="_blank">
+                                    <span class="dashicons dashicons-external"></span>
+                                    <?php esc_html_e( 'Conversions API Dokümantasyonu', 'trackify-capi' ); ?>
+                                </a>
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <a href="https://www.facebook.com/business/help/402791146561655" target="_blank">
+                                    <span class="dashicons dashicons-external"></span>
+                                    <?php esc_html_e( 'Event Match Quality (EMQ)', 'trackify-capi' ); ?>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            // Test Event
+            $('.trackify-send-test-event').on('click', function() {
+                var $button = $(this);
+                var $result = $('#test-event-result');
+                
+                $button.prop('disabled', true).text('<?php esc_attr_e( 'Gönderiliyor...', 'trackify-capi' ); ?>');
+                $result.html('');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'trackify_send_test_event',
+                        nonce: '<?php echo esc_js( wp_create_nonce( 'trackify_capi_admin' ) ); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $result.html('<div class="notice notice-success inline"><p>' + response.data.message + '</p></div>');
+                        } else {
+                            $result.html('<div class="notice notice-error inline"><p>' + response.data.message + '</p></div>');
+                        }
+                    },
+                    error: function() {
+                        $result.html('<div class="notice notice-error inline"><p><?php esc_html_e( 'Bir hata oluştu', 'trackify-capi' ); ?></p></div>');
+                    },
+                    complete: function() {
+                        $button.prop('disabled', false).html('<span class="dashicons dashicons-upload"></span> <?php esc_html_e( 'Test Event Gönder', 'trackify-capi' ); ?>');
+                    }
+                });
+            });
+            
+            // Clear Logs
+            $('.trackify-clear-logs').on('click', function() {
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'trackify_clear_logs',
+                        nonce: '<?php echo esc_js( wp_create_nonce( 'trackify_capi_admin' ) ); ?>'
+                    },
+                    success: function(response) {
+                        alert('<?php esc_attr_e( 'Loglar temizlendi', 'trackify-capi' ); ?>');
+                        location.reload();
+                    }
+                });
+            });
+            
+            // Export Settings
+            $('.trackify-export-settings').on('click', function() {
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'trackify_export_settings',
+                        nonce: '<?php echo esc_js( wp_create_nonce( 'trackify_capi_admin' ) ); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            var blob = new Blob([response.data.json], {type: 'application/json'});
+                            var url = window.URL.createObjectURL(blob);
+                            var a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'trackify-capi-settings-' + Date.now() + '.json';
+                            a.click();
+                        }
+                    }
+                });
+            });
+            
+            // Import Settings
+            $('#trackify-import-file').on('change', function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'trackify_import_settings',
+                            nonce: '<?php echo esc_js( wp_create_nonce( 'trackify_capi_admin' ) ); ?>',
+                            json: e.target.result
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('<?php esc_attr_e( 'Ayarlar başarıyla içe aktarıldı', 'trackify-capi' ); ?>');
+                                location.reload();
+                            } else {
+                                alert(response.data.message);
+                            }
+                        }
+                    });
+                };
+                reader.readAsText(file);
+            });
+        });
+        </script>
         <?php
     }
     
@@ -423,30 +449,5 @@ class Trackify_CAPI_Tools_Page {
         global $wpdb;
         $table = $wpdb->prefix . 'trackify_capi_events';
         return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
-    }
-    
-    /**
-     * Get log directory size
-     * 
-     * @return int
-     */
-    private function get_log_directory_size() {
-        $upload_dir = wp_upload_dir();
-        $log_dir = $upload_dir['basedir'] . '/trackify-capi/logs/';
-        
-        if ( ! file_exists( $log_dir ) ) {
-            return 0;
-        }
-        
-        $size = 0;
-        $files = glob( $log_dir . '*' );
-        
-        foreach ( $files as $file ) {
-            if ( is_file( $file ) ) {
-                $size += filesize( $file );
-            }
-        }
-        
-        return $size;
     }
 }

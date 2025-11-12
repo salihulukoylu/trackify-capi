@@ -15,13 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Trackify_CAPI_Analytics_Page {
     
     /**
-     * Analytics instance
-     * 
-     * @var Trackify_CAPI_Analytics
-     */
-    private $analytics;
-    
-    /**
      * Logger instance
      * 
      * @var Trackify_CAPI_Logger
@@ -29,11 +22,18 @@ class Trackify_CAPI_Analytics_Page {
     private $logger;
     
     /**
+     * Settings instance
+     * 
+     * @var Trackify_CAPI_Settings
+     */
+    private $settings;
+    
+    /**
      * Constructor
      */
     public function __construct() {
-        $this->analytics = trackify_capi()->get_component( 'analytics' );
         $this->logger = trackify_capi()->get_component( 'logger' );
+        $this->settings = trackify_capi()->get_component( 'settings' );
     }
     
     /**
@@ -42,11 +42,10 @@ class Trackify_CAPI_Analytics_Page {
     public function render() {
         // Tarih aralığını al
         $days = isset( $_GET['days'] ) ? intval( $_GET['days'] ) : 30;
-        $days = max( 1, min( 90, $days ) ); // 1-90 gün arası
+        $days = max( 1, min( 90, $days ) );
         
         // İstatistikleri al
         $stats = $this->logger->get_event_stats( $days );
-        $chart_data = $this->analytics->get_chart_data( $days );
         
         // Toplam hesaplamalar
         $total_events = 0;
@@ -72,7 +71,8 @@ class Trackify_CAPI_Analytics_Page {
             <div style="margin-bottom: 20px;">
                 <form method="get" style="display: inline-block;">
                     <input type="hidden" name="page" value="trackify-capi-analytics" />
-                    <select name="days" onchange="this.form.submit()">
+                    <label for="days"><?php esc_html_e( 'Tarih Aralığı:', 'trackify-capi' ); ?></label>
+                    <select name="days" id="days" onchange="this.form.submit()">
                         <option value="7" <?php selected( $days, 7 ); ?>><?php esc_html_e( 'Son 7 Gün', 'trackify-capi' ); ?></option>
                         <option value="14" <?php selected( $days, 14 ); ?>><?php esc_html_e( 'Son 14 Gün', 'trackify-capi' ); ?></option>
                         <option value="30" <?php selected( $days, 30 ); ?>><?php esc_html_e( 'Son 30 Gün', 'trackify-capi' ); ?></option>
@@ -85,7 +85,7 @@ class Trackify_CAPI_Analytics_Page {
             <!-- Key Metrics -->
             <div class="trackify-analytics-grid">
                 <div class="trackify-metric-card">
-                    <div class="trackify-metric-value"><?php echo esc_html( trackify_capi_format_number( $total_events ) ); ?></div>
+                    <div class="trackify-metric-value"><?php echo esc_html( number_format_i18n( $total_events ) ); ?></div>
                     <div class="trackify-metric-label"><?php esc_html_e( 'Toplam Event', 'trackify-capi' ); ?></div>
                     <div class="trackify-metric-change">
                         <?php
@@ -99,7 +99,7 @@ class Trackify_CAPI_Analytics_Page {
                 </div>
                 
                 <div class="trackify-metric-card">
-                    <div class="trackify-metric-value" style="color: #28a745;"><?php echo esc_html( trackify_capi_format_number( $successful_events ) ); ?></div>
+                    <div class="trackify-metric-value" style="color: #28a745;"><?php echo esc_html( number_format_i18n( $successful_events ) ); ?></div>
                     <div class="trackify-metric-label"><?php esc_html_e( 'Başarılı Event', 'trackify-capi' ); ?></div>
                     <div class="trackify-metric-change positive">
                         <?php echo esc_html( $success_rate ); ?>% <?php esc_html_e( 'başarı oranı', 'trackify-capi' ); ?>
@@ -107,7 +107,7 @@ class Trackify_CAPI_Analytics_Page {
                 </div>
                 
                 <div class="trackify-metric-card">
-                    <div class="trackify-metric-value" style="color: #dc3545;"><?php echo esc_html( trackify_capi_format_number( $failed_events ) ); ?></div>
+                    <div class="trackify-metric-value" style="color: #dc3545;"><?php echo esc_html( number_format_i18n( $failed_events ) ); ?></div>
                     <div class="trackify-metric-label"><?php esc_html_e( 'Başarısız Event', 'trackify-capi' ); ?></div>
                     <div class="trackify-metric-change negative">
                         <?php echo esc_html( round( 100 - $success_rate, 1 ) ); ?>% <?php esc_html_e( 'hata oranı', 'trackify-capi' ); ?>
@@ -121,83 +121,9 @@ class Trackify_CAPI_Analytics_Page {
                 </div>
             </div>
             
-            <!-- Chart -->
-            <?php if ( ! empty( $chart_data ) ) : ?>
-            <div class="trackify-chart-container">
-                <h3><?php esc_html_e( 'Event Trendi', 'trackify-capi' ); ?></h3>
-                <canvas id="trackify-events-chart" style="max-height: 400px;"></canvas>
-            </div>
-            
-            <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-            <script>
-            (function() {
-                const ctx = document.getElementById('trackify-events-chart');
-                if (!ctx) return;
-                
-                const chartData = <?php echo wp_json_encode( $chart_data ); ?>;
-                
-                const labels = chartData.map(d => d.date);
-                const totalData = chartData.map(d => d.total);
-                const successData = chartData.map(d => d.successful);
-                const failedData = chartData.map(d => d.failed);
-                
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: '<?php esc_html_e( 'Toplam', 'trackify-capi' ); ?>',
-                                data: totalData,
-                                borderColor: '#0073aa',
-                                backgroundColor: 'rgba(0, 115, 170, 0.1)',
-                                tension: 0.3
-                            },
-                            {
-                                label: '<?php esc_html_e( 'Başarılı', 'trackify-capi' ); ?>',
-                                data: successData,
-                                borderColor: '#28a745',
-                                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                                tension: 0.3
-                            },
-                            {
-                                label: '<?php esc_html_e( 'Başarısız', 'trackify-capi' ); ?>',
-                                data: failedData,
-                                borderColor: '#dc3545',
-                                backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                                tension: 0.3
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0
-                                }
-                            }
-                        }
-                    }
-                });
-            })();
-            </script>
-            <?php endif; ?>
-            
             <!-- Event Breakdown -->
             <?php if ( ! empty( $stats ) ) : ?>
-            <div class="trackify-chart-container">
+            <div class="trackify-chart-container" style="background: white; padding: 20px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <h3><?php esc_html_e( 'Event Detayları', 'trackify-capi' ); ?></h3>
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
@@ -218,22 +144,16 @@ class Trackify_CAPI_Analytics_Page {
                         ?>
                         <tr>
                             <td><strong><?php echo esc_html( $stat['event_name'] ); ?></strong></td>
-                            <td><?php echo esc_html( trackify_capi_format_number( $stat['total'] ) ); ?></td>
-                            <td style="color: #28a745;"><?php echo esc_html( trackify_capi_format_number( $stat['successful'] ) ); ?></td>
-                            <td style="color: #dc3545;"><?php echo esc_html( trackify_capi_format_number( $stat['failed'] ) ); ?></td>
+                            <td><?php echo esc_html( number_format_i18n( $stat['total'] ) ); ?></td>
+                            <td style="color: #28a745;"><?php echo esc_html( number_format_i18n( $stat['successful'] ) ); ?></td>
+                            <td style="color: #dc3545;"><?php echo esc_html( number_format_i18n( $stat['failed'] ) ); ?></td>
+                            <td><?php echo esc_html( $event_success_rate ); ?>%</td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span class="trackify-success-badge" style="background: <?php echo $event_success_rate >= 90 ? '#28a745' : ( $event_success_rate >= 70 ? '#ffc107' : '#dc3545' ); ?>; color: white; padding: 3px 10px; border-radius: 3px; font-size: 12px; font-weight: 600;">
-                                        <?php echo esc_html( $event_success_rate ); ?>%
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="flex: 1; background: #f0f0f1; border-radius: 3px; height: 20px; overflow: hidden;">
-                                        <div style="background: #0073aa; height: 100%; width: <?php echo esc_attr( $event_percentage ); ?>%;"></div>
+                                    <div style="flex: 1; background: #f0f0f0; height: 20px; border-radius: 3px; overflow: hidden;">
+                                        <div style="width: <?php echo esc_attr( $event_percentage ); ?>%; background: #0073aa; height: 100%;"></div>
                                     </div>
-                                    <span style="font-size: 12px; color: #666;"><?php echo esc_html( $event_percentage ); ?>%</span>
+                                    <span><?php echo esc_html( $event_percentage ); ?>%</span>
                                 </div>
                             </td>
                         </tr>
@@ -242,11 +162,11 @@ class Trackify_CAPI_Analytics_Page {
                 </table>
             </div>
             <?php else : ?>
-            <div class="trackify-info-box">
+            <div class="trackify-info-box" style="background: white; padding: 20px; margin-top: 20px;">
                 <span class="dashicons dashicons-info"></span>
                 <div>
                     <strong><?php esc_html_e( 'Henüz veri yok', 'trackify-capi' ); ?></strong>
-                    <p><?php esc_html_e( 'Seçilen tarih aralığında event bulunamadı.', 'trackify-capi' ); ?></p>
+                    <p><?php esc_html_e( 'Seçtiğiniz tarih aralığında event bulunamadı.', 'trackify-capi' ); ?></p>
                 </div>
             </div>
             <?php endif; ?>

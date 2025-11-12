@@ -182,11 +182,10 @@ class Trackify_CAPI_Logger {
         
         // Debug mode'da detaylı bilgi
         if ( $this->settings->is_debug_mode() ) {
-            $log_message .= '  Data: ' . wp_json_encode( $data, JSON_UNESCAPED_UNICODE ) . "\n";
+            $log_message .= '  Data: ' . wp_json_encode( $data ) . "\n";
         }
         
         // Dosyaya yaz
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
         file_put_contents( $log_file, $log_message, FILE_APPEND );
     }
     
@@ -202,28 +201,28 @@ class Trackify_CAPI_Logger {
         $date = current_time( 'Y-m-d' );
         $event_name = $data['event_name'] ?? '';
         $pixel_id = $data['pixel_id'] ?? '';
-        $status = $data['status'] ?? 'unknown';
+        $status = $data['status'] ?? 'pending';
         
-        // Kayıt var mı kontrol et
+        if ( empty( $event_name ) ) {
+            return;
+        }
+        
+        // Mevcut kaydı bul
         $existing = $wpdb->get_row( $wpdb->prepare(
             "SELECT * FROM {$table_name} WHERE date = %s AND event_name = %s AND pixel_id = %s",
             $date,
             $event_name,
             $pixel_id
-        ) );
+        ), ARRAY_A );
         
         if ( $existing ) {
             // Güncelle
-            $total = $existing->total_events + 1;
-            $successful = $status === 'success' ? $existing->successful_events + 1 : $existing->successful_events;
-            $failed = $status === 'error' ? $existing->failed_events + 1 : $existing->failed_events;
-            
             $wpdb->update(
                 $table_name,
                 array(
-                    'total_events' => $total,
-                    'successful_events' => $successful,
-                    'failed_events' => $failed,
+                    'total_events' => $existing['total_events'] + 1,
+                    'successful_events' => $status === 'success' ? $existing['successful_events'] + 1 : $existing['successful_events'],
+                    'failed_events' => $status === 'error' ? $existing['failed_events'] + 1 : $existing['failed_events'],
                 ),
                 array(
                     'date' => $date,
@@ -366,8 +365,7 @@ class Trackify_CAPI_Logger {
                 event_name,
                 SUM(total_events) as total,
                 SUM(successful_events) as successful,
-                SUM(failed_events) as failed,
-                ROUND(AVG(avg_emq_score), 2) as avg_emq
+                SUM(failed_events) as failed
             FROM {$table_name}
             WHERE date >= %s
             GROUP BY event_name

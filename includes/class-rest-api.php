@@ -141,6 +141,15 @@ class Trackify_CAPI_Rest_API {
                         'type' => 'string',
                         'enum' => array( 'success', 'error', 'pending' ),
                     ),
+                    'event_name' => array(
+                        'type' => 'string',
+                    ),
+                    'date_from' => array(
+                        'type' => 'string',
+                    ),
+                    'date_to' => array(
+                        'type' => 'string',
+                    ),
                 ),
             )
         );
@@ -152,6 +161,17 @@ class Trackify_CAPI_Rest_API {
             array(
                 'methods' => WP_REST_Server::CREATABLE,
                 'callback' => array( $this, 'send_test_event' ),
+                'permission_callback' => array( $this, 'check_admin_permission' ),
+            )
+        );
+        
+        // Pixels endpoint (admin only)
+        register_rest_route(
+            $this->namespace,
+            '/pixels',
+            array(
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => array( $this, 'get_pixels' ),
                 'permission_callback' => array( $this, 'check_admin_permission' ),
             )
         );
@@ -230,6 +250,8 @@ class Trackify_CAPI_Rest_API {
                 'wpforms' => defined( 'WPFORMS_VERSION' ),
                 'gravity_forms' => class_exists( 'GFForms' ),
                 'elementor' => defined( 'ELEMENTOR_VERSION' ),
+                'fluent_forms' => defined( 'FLUENTFORM' ),
+                'ninja_forms' => class_exists( 'Ninja_Forms' ),
             ),
             'timestamp' => current_time( 'mysql' ),
         );
@@ -248,10 +270,30 @@ class Trackify_CAPI_Rest_API {
         
         $stats = $this->logger->get_event_stats( $days );
         
+        // Toplam hesaplamalar
+        $total_events = 0;
+        $successful_events = 0;
+        $failed_events = 0;
+        
+        foreach ( $stats as $stat ) {
+            $total_events += $stat['total'];
+            $successful_events += $stat['successful'];
+            $failed_events += $stat['failed'];
+        }
+        
+        $success_rate = $total_events > 0 ? round( ( $successful_events / $total_events ) * 100, 1 ) : 0;
+        
         return new WP_REST_Response(
             array(
                 'success' => true,
                 'days' => $days,
+                'summary' => array(
+                    'total_events' => $total_events,
+                    'successful_events' => $successful_events,
+                    'failed_events' => $failed_events,
+                    'success_rate' => $success_rate,
+                    'average_per_day' => $total_events > 0 ? round( $total_events / $days, 1 ) : 0,
+                ),
                 'stats' => $stats,
             ),
             200
@@ -267,10 +309,26 @@ class Trackify_CAPI_Rest_API {
     public function get_logs( $request ) {
         $limit = $request->get_param( 'limit' );
         $status = $request->get_param( 'status' );
+        $event_name = $request->get_param( 'event_name' );
+        $date_from = $request->get_param( 'date_from' );
+        $date_to = $request->get_param( 'date_to' );
         
         $filters = array();
+        
         if ( $status ) {
             $filters['status'] = $status;
+        }
+        
+        if ( $event_name ) {
+            $filters['event_name'] = $event_name;
+        }
+        
+        if ( $date_from ) {
+            $filters['date_from'] = $date_from;
+        }
+        
+        if ( $date_to ) {
+            $filters['date_to'] = $date_to;
         }
         
         $logs = $this->logger->get_recent_logs( $limit, $filters );
@@ -279,6 +337,7 @@ class Trackify_CAPI_Rest_API {
             array(
                 'success' => true,
                 'count' => count( $logs ),
+                'filters' => $filters,
                 'logs' => $logs,
             ),
             200
@@ -295,6 +354,7 @@ class Trackify_CAPI_Rest_API {
         
         $custom_data = array(
             'content_name' => 'Test Event from REST API',
+            'content_category' => 'test',
             'value' => 99.99,
             'currency' => 'USD',
         );
@@ -317,6 +377,36 @@ class Trackify_CAPI_Rest_API {
                 'message' => __( 'Test event başarıyla gönderildi', 'trackify-capi' ),
                 'event_id' => $event_id,
                 'result' => $result,
+            ),
+            200
+        );
+    }
+    
+    /**
+     * Pixels endpoint
+     * 
+     * @return WP_REST_Response
+     */
+    public function get_pixels() {
+        $all_pixels = $this->settings->get( 'pixels', array() );
+        $active_pixels = $this->settings->get_active_pixels();
+        
+        // Token'ları gizle
+        $safe_pixels = array();
+        foreach ( $all_pixels as $pixel ) {
+            $safe_pixel = $pixel;
+            if ( ! empty( $safe_pixel['access_token'] ) ) {
+                $safe_pixel['access_token'] = substr( $safe_pixel['access_token'], 0, 10 ) . '...';
+            }
+            $safe_pixels[] = $safe_pixel;
+        }
+        
+        return new WP_REST_Response(
+            array(
+                'success' => true,
+                'total_pixels' => count( $all_pixels ),
+                'active_pixels' => count( $active_pixels ),
+                'pixels' => $safe_pixels,
             ),
             200
         );

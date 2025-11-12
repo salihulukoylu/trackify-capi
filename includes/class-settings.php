@@ -63,8 +63,90 @@ class Trackify_CAPI_Settings {
      */
     private function load_settings() {
         if ( is_null( $this->settings ) ) {
-            $this->settings = get_option( $this->option_key, array() );
+            $this->settings = get_option( $this->option_key, $this->get_default_settings() );
         }
+    }
+    
+    /**
+     * Varsayılan ayarları getir
+     * 
+     * @return array
+     */
+    private function get_default_settings() {
+        return array(
+            'enabled' => true,
+            'debug_mode' => false,
+            'test_mode' => false,
+            'pixels' => array(),
+            'capi_enabled' => true,
+            'api_version' => 'v18.0',
+            'events' => array(
+                'PageView' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+                'ViewContent' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+                'AddToCart' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+                'InitiateCheckout' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+                'Purchase' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+                'Lead' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+                'Search' => array(
+                    'enabled' => true,
+                    'pixel' => true,
+                    'capi' => true,
+                ),
+            ),
+            'advanced_matching' => array(
+                'enabled' => true,
+                'hash_email' => true,
+                'hash_phone' => true,
+                'hash_name' => true,
+                'hash_address' => true,
+                'capture_fbp' => true,
+                'capture_fbc' => true,
+            ),
+            'performance' => array(
+                'use_queue' => true,
+                'queue_size' => 10,
+                'batch_sending' => true,
+            ),
+            'logging' => array(
+                'enabled' => true,
+                'log_level' => 'info',
+                'retention_days' => 30,
+                'database_logging' => true,
+                'file_logging' => false,
+            ),
+            'integrations' => array(
+                'woocommerce' => array(
+                    'enabled' => true,
+                ),
+                'forms' => array(
+                    'enabled' => true,
+                ),
+            ),
+        );
     }
     
     /**
@@ -225,7 +307,12 @@ class Trackify_CAPI_Settings {
         
         // Entegrasyonlar
         if ( ! empty( $settings['integrations'] ) ) {
-            $sanitized['integrations'] = $settings['integrations'];
+            $sanitized['integrations'] = array();
+            foreach ( $settings['integrations'] as $integration_key => $integration_settings ) {
+                $sanitized['integrations'][ $integration_key ] = array(
+                    'enabled' => ! empty( $integration_settings['enabled'] ),
+                );
+            }
         }
         
         return apply_filters( 'trackify_capi_sanitize_settings', $sanitized, $settings );
@@ -367,6 +454,7 @@ class Trackify_CAPI_Settings {
      * @return bool
      */
     public function reset() {
-        return delete_option( $this->option_key );
+        $this->settings = $this->get_default_settings();
+        return update_option( $this->option_key, $this->settings );
     }
 }

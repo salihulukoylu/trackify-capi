@@ -25,6 +25,7 @@ function trackify_capi_uninstall_tables() {
     );
     
     foreach ( $tables as $table ) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query( "DROP TABLE IF EXISTS {$table}" );
     }
 }
@@ -51,6 +52,7 @@ function trackify_capi_uninstall_options() {
 function trackify_capi_uninstall_transients() {
     global $wpdb;
     
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
     $wpdb->query(
         "DELETE FROM {$wpdb->options} 
         WHERE option_name LIKE '_transient_trackify_capi_%' 
@@ -107,25 +109,9 @@ function trackify_capi_delete_directory( $dir ) {
     return rmdir( $dir );
 }
 
-/**
- * Post meta temizliği
- */
-function trackify_capi_uninstall_post_meta() {
-    global $wpdb;
-    
-    $wpdb->query(
-        "DELETE FROM {$wpdb->postmeta} 
-        WHERE meta_key LIKE '_trackify_capi_%'"
-    );
-}
-
-// Uninstall işlemlerini çalıştır
-trackify_capi_uninstall_cron();
-trackify_capi_uninstall_transients();
-trackify_capi_uninstall_post_meta();
-trackify_capi_uninstall_options();
+// Run uninstall
 trackify_capi_uninstall_tables();
+trackify_capi_uninstall_options();
+trackify_capi_uninstall_transients();
+trackify_capi_uninstall_cron();
 trackify_capi_uninstall_files();
-
-// Uninstall tamamlandı
-do_action( 'trackify_capi_uninstalled' );
