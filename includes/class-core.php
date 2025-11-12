@@ -98,9 +98,18 @@ class Trackify_CAPI_Core {
         }
         
         // Integrations
-        if ( class_exists( 'WooCommerce' ) ) {
-            require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-woocommerce-integration.php';
-        }
+        // Abstract integration base
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/abstract-integration.php';
+
+        // Load integration implementations/stubs. Files are safe to include even if
+        // corresponding plugin is not active because each integration checks
+        // plugin presence before hooking.
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-woocommerce-integration.php';
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-woocommerce.php';
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-edd.php';
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-memberpress.php';
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-lifterlms.php';
+        require_once TRACKIFY_CAPI_INCLUDES . 'integrations/class-learndash.php';
     }
     
     /**
@@ -166,6 +175,26 @@ class Trackify_CAPI_Core {
                 $this->components['settings'],
                 $this->components['event_handler']
             );
+        }
+
+        // Easy Digital Downloads
+        if ( class_exists( 'Easy_Digital_Downloads' ) || class_exists( 'EDD' ) ) {
+            $this->components['edd'] = new Trackify_CAPI_EDD();
+        }
+
+        // MemberPress
+        if ( class_exists( 'MemberPress' ) || class_exists( 'MeprSubscription' ) ) {
+            $this->components['memberpress'] = new Trackify_CAPI_MemberPress();
+        }
+
+        // LifterLMS
+        if ( class_exists( 'LLMS' ) || function_exists( 'lifterlms' ) ) {
+            $this->components['lifterlms'] = new Trackify_CAPI_LifterLMS();
+        }
+
+        // LearnDash
+        if ( class_exists( 'Learndash_Settings' ) || function_exists( 'learndash_is_active' ) ) {
+            $this->components['learndash'] = new Trackify_CAPI_LearnDash();
         }
         
         do_action( 'trackify_capi_components_loaded', $this->components );
