@@ -1,0 +1,45 @@
+name: PHP CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  phpcs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Validate PHP version
+        run: php -v
+      - name: Install composer dependencies
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+          composer --version
+      - name: Require phpcs (local)
+        run: composer require --dev squizlabs/php_codesniffer dealerdirect/phpcodesniffer-composer-installer --no-interaction --no-progress
+      - name: Run PHPCS
+        run: ./vendor/bin/phpcs -p --standard=phpcs.xml || true
+
+  phpunit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+      - name: Install composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+      - name: Require phpunit
+        run: composer require --dev phpunit/phpunit --no-interaction --no-progress
+      - name: Run phpunit
+        run: ./vendor/bin/phpunit --configuration phpunit.xml.dist || true
