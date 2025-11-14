@@ -162,7 +162,7 @@ class Trackify_CAPI_Events_Page {
                                 <th style="width: 20%;"><?php esc_html_e( 'Detaylar', 'trackify-capi' ); ?></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody> 
                             <?php foreach ( $logs as $log ) : ?>
                             <tr>
                                 <td><strong><?php echo esc_html( $log['event_name'] ); ?></strong></td>
