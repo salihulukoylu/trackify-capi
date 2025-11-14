@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset name="Trackify CAPI">
+    <description>PHP_CodeSniffer ruleset for Trackify CAPI plugin (WordPress standards).</description>
+
+    <!-- Use WordPress Coding Standards if available in CI -->
+    <rule ref="WordPress" />
+
+    <!-- Customizations -->
+    <file>includes</file>
+    <file>admin</file>
+    <file>templates</file>
+    <file>assets</file>
+
+    <exclude-pattern>**/vendor/**</exclude-pattern>
+    <exclude-pattern>**/node_modules/**</exclude-pattern>
+</ruleset>

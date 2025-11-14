@@ -241,7 +241,7 @@ class Trackify_CAPI_Events_Page {
      */
     private function export_csv() {
         $filters = array();
-        
+       
         if ( ! empty( $_GET['status'] ) ) {
             $filters['status'] = sanitize_text_field( wp_unslash( $_GET['status'] ) );
         }
